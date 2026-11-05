@@ -29,7 +29,7 @@ let songs = [
         "title": "The Leper Affinity",
         "artist": "Opeth",
         "link": "https://youtu.be/nKpIwX2P118?si=rrdnEy_4ajwrCyBn",
-        "img": "./images/song-library-imgs/leper-img.png",
+        "img": "images/song-library-imgs/leper-img.png",
         "genre": "metal",
         "rating": "10",
         "techniques": [
@@ -42,7 +42,7 @@ let songs = [
         "title": "Miles Beyond",
         "artist": "Mahavishnu Orchestra",
         "link": "https://youtu.be/8dj9KB89-OQ?si=LU1dT4c6x1_sNaRB",
-        "img": "./images/song-library-imgs/miles.png",
+        "img": "images/song-library-imgs/miles.png",
         "genre": "jazz",
         "rating": "9",
         "techniques": [
@@ -56,7 +56,7 @@ let songs = [
         "title": "The Thrill is Gone",
         "artist": "B.B. King",
         "link": "https://youtu.be/kpC69qIe02E?si=HJeze8XuxUketYFy",
-        "img": "./images/song-library-imgs/thrill.png",
+        "img": "images/song-library-imgs/thrill.png",
         "genre": "Blues",
         "rating": "10",
         "techniques": [
@@ -69,7 +69,7 @@ let songs = [
         "title": "Holy Fallout",
         "artist": "Cynic",
         "link": "https://youtu.be/MJe3RLwftSM?si=19DV33X6fSYuWgne",
-        "img": "./images/song-library-imgs/holy-fallout.png",
+        "img": "images/song-library-imgs/holy-fallout.png",
         "genre": "rock",
         "rating": "8",
         "techniques": [
@@ -82,7 +82,7 @@ let songs = [
         "title": "Melanchronic",
         "artist": "Vianova",
         "link": "https://youtu.be/Uba0M2k9pQs?si=yG8XM8Itm5TckiJ4",
-        "img": "./images/song-library-imgs/melanchronic.png",
+        "img": "images/song-library-imgs/melanchronic.png",
         "genre": "metal",
         "rating": "8",
         "techniques": [
@@ -95,7 +95,7 @@ let songs = [
         "title": "Real",
         "artist": "Unprocessed",
         "link": "https://youtu.be/WVua9g7WPtg?si=deDnWwBlrx4E0r9i",
-        "img": "./images/song-library-imgs/real.png",
+        "img": "images/song-library-imgs/real.png",
         "genre": "rock",
         "rating": "10",
         "techniques": [
@@ -109,7 +109,7 @@ let songs = [
         "title": "Burning Ring of Fire",
         "artist": "Johnny Cash",
         "link": "https://youtu.be/5WyLhwYFgmk?si=D2BxBBm6XO8zRBtg",
-        "img": "./images/song-library-imgs/ring-of-fire.png",
+        "img": "images/song-library-imgs/ring-of-fire.png",
         "genre": "country",
         "rating": "10",
         "techniques": [
@@ -122,7 +122,7 @@ let songs = [
         "title": "Burden",
         "artist": "Opeth",
         "link": "https://youtu.be/orwgEEaJln0?si=_So15HCk-gKYbkRU",
-        "img": "./images/song-library-imgs/burden.png",
+        "img": "images/song-library-imgs/burden.png",
         "genre": "rock",
         "rating": "10",
         "techniques": [
