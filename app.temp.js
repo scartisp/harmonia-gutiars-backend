@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+require('dotenv').config();
 
 //testdb is name of database, it will automatically make it
 mongoose

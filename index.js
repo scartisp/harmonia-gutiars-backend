@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-// const Joi = require("joi");
 const multer = require("multer");
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
@@ -20,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 let songs = [

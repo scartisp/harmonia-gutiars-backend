@@ -1,0 +1,53 @@
+:root {
+  /*Color variables*/
+  --brand-orange: #FF972A;
+  --brand-cream: #F6EEE3;
+  --brand-indigo: #3D4A7C;
+  --brand-indigo-deep: #1F2545;
+  --brand-deepest-indigo: #171A2E;
+  /* font variables */
+  --jua-font: "Jua", sans-serif;
+  --inter-font: "Inter", sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--brand-indigo);
+}
+
+/*header*/
+
+#main-header {
+  box-sizing: border-box;
+  background-color: var(--brand-indigo);
+  border-bottom: 3px solid var(--brand-orange);
+  padding: 25px 30px;
+}
+
+#main-header-container {
+  display: flex;
+  justify-content: center;
+}
+
+#main-header-container h1 {
+  font-family: var(--jua-font);
+  color: var(--brand-cream);
+  font-size: clamp(1.75rem, 11.58vw, 2.75rem);
+  font-weight: 500;
+  margin: 0;
+}
+
+
+/*shared classes*/
+
+.letter-spacing-two {
+  letter-spacing: 2px;
+}
+
+.weight-500 {
+  font-weight: 500;
+}
