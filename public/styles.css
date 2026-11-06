@@ -56,10 +56,11 @@ body {
   gap: 10px;
 }
 
-#body-content div {
+#body-content li {
   display: flex;
   flex-direction: column;
   align-items: center;
+  list-style: none;
 }
 
 #body-content h2 {
