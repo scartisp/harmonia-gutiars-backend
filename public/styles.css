@@ -41,6 +41,48 @@ body {
   margin: 0;
 }
 
+/*main content*/
+#main-body {
+  box-sizing: border-box;
+  background-color: var(--brand-indigo-deep);
+  border-bottom: 3px solid var(--brand-orange);
+  padding: 25px 30px;
+}
+
+#body-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#body-content div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#body-content h2 {
+  font-family: var(--jua-font);
+  color: var(--brand-cream);
+  margin: 0 0 5px 0;
+}
+
+#body-content p {
+  margin: 0;
+}
+
+#body-content a {
+  font-family: var(--inter-font);
+  color: var(--brand-orange);
+  text-decoration: none;
+}
+
+#body-content a:hover {
+  text-decoration: underline;
+}
+
+
 
 /*shared classes*/
 
