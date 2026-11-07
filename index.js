@@ -34,7 +34,8 @@ let songs = [
         "techniques": [
             "Sweep Picking",
             "Syncopation"
-        ]
+        ],
+        'videoId': 'nKpIwX2P118'
     },
     {
         "_id": "2",
@@ -48,7 +49,8 @@ let songs = [
             "Hammer on",
             "Bends",
             "Tremelo picking"
-        ]
+        ],
+        'videoId': '8dj9KB89-OQ'
     },
     {
         "_id": "3",
@@ -61,7 +63,8 @@ let songs = [
         "techniques": [
             "Bends",
             "Staccoto"
-        ]
+        ],
+        'videoId': 'P_Qw4KgqpYI'
     },
     {
         "_id": "4",
@@ -74,7 +77,8 @@ let songs = [
         "techniques": [
             "sliding",
             "Hybrid picking"
-        ]
+        ],
+        'videoId': 'MJe3RLwftSM'
     },
     {
         "_id": "5",
@@ -87,7 +91,8 @@ let songs = [
         "techniques": [
             "palm muting",
             "power chords"
-        ]
+        ],
+        'videoId': 'Uba0M2k9pQs'
     },
     {
         "_id": "6",
@@ -101,7 +106,8 @@ let songs = [
             "finger picking",
             "thumping",
             "dead notes"
-        ]
+        ],
+        'videoId': 'WVua9g7WPtg'
     },
     {
         "_id": "7",
@@ -114,7 +120,8 @@ let songs = [
         "techniques": [
             "open chords",
             "strumming"
-        ]
+        ],
+        'videoId': '1WaV2x8GXj0'
     },
     {
         "_id": "8",
@@ -128,7 +135,8 @@ let songs = [
             "string skipping",
             "bends",
             "vibrato"
-        ]
+        ],
+        'videoId': 'orwgEEaJln0'
     }
 ];
 
