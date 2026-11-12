@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
 const multer = require("multer");
+const Joi = require('joi');
+
+const app = express();
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
@@ -142,8 +144,27 @@ let songs = [
 
 app.get('/api/songs', (req, res)=> {
   res.send(songs);
-
 });
+
+app.post('/api/songs', upload.single('img'), (req, res)=> {
+    console.log('in post');
+    const result = validateSong(req.body);
+    if (result.error) {
+        console.log('Error in validation');
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+    //todo
+});
+
+const validateSong = song => {
+    const schema = Joi.object({
+        _id: Joi.allow(''),
+        //todo
+    });
+
+    return schema.validate(song);
+};
 
 app.listen(3002, () => {
   console.log("I'm listening");
