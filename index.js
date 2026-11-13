@@ -29,10 +29,10 @@ let songs = [
         "_id": "1",
         "title": "The Leper Affinity",
         "artist": "Opeth",
-        "link": "https://youtu.be/nKpIwX2P118?si=rrdnEy_4ajwrCyBn",
         "img": "images/song-library-imgs/leper-img.png",
         "genre": "metal",
         "rating": "10",
+        'rating_count': 10,
         "techniques": [
             "Sweep Picking",
             "Syncopation"
@@ -43,10 +43,10 @@ let songs = [
         "_id": "2",
         "title": "Miles Beyond",
         "artist": "Mahavishnu Orchestra",
-        "link": "https://youtu.be/8dj9KB89-OQ?si=LU1dT4c6x1_sNaRB",
         "img": "images/song-library-imgs/miles.png",
         "genre": "jazz",
         "rating": "9",
+        'rating_count': 23,
         "techniques": [
             "Hammer on",
             "Bends",
@@ -58,10 +58,10 @@ let songs = [
         "_id": "3",
         "title": "The Thrill is Gone",
         "artist": "B.B. King",
-        "link": "https://youtu.be/kpC69qIe02E?si=HJeze8XuxUketYFy",
         "img": "images/song-library-imgs/thrill.png",
         "genre": "Blues",
         "rating": "10",
+        'rating_count': 31,
         "techniques": [
             "Bends",
             "Staccoto"
@@ -72,10 +72,10 @@ let songs = [
         "_id": "4",
         "title": "Holy Fallout",
         "artist": "Cynic",
-        "link": "https://youtu.be/MJe3RLwftSM?si=19DV33X6fSYuWgne",
         "img": "images/song-library-imgs/holy-fallout.png",
         "genre": "rock",
         "rating": "8",
+        'rating_count': 13,
         "techniques": [
             "sliding",
             "Hybrid picking"
@@ -86,10 +86,10 @@ let songs = [
         "_id": "5",
         "title": "Melanchronic",
         "artist": "Vianova",
-        "link": "https://youtu.be/Uba0M2k9pQs?si=yG8XM8Itm5TckiJ4",
         "img": "images/song-library-imgs/melanchronic.png",
         "genre": "metal",
         "rating": "8",
+        'rating_count': 1,
         "techniques": [
             "palm muting",
             "power chords"
@@ -100,10 +100,10 @@ let songs = [
         "_id": "6",
         "title": "Real",
         "artist": "Unprocessed",
-        "link": "https://youtu.be/WVua9g7WPtg?si=deDnWwBlrx4E0r9i",
         "img": "images/song-library-imgs/real.png",
         "genre": "rock",
         "rating": "10",
+        'rating_count': 21,
         "techniques": [
             "finger picking",
             "thumping",
@@ -115,10 +115,10 @@ let songs = [
         "_id": "7",
         "title": "Burning Ring of Fire",
         "artist": "Johnny Cash",
-        "link": "https://youtu.be/5WyLhwYFgmk?si=D2BxBBm6XO8zRBtg",
         "img": "images/song-library-imgs/ring-of-fire.png",
         "genre": "country",
         "rating": "10",
+        'rating_count': 54,
         "techniques": [
             "open chords",
             "strumming"
@@ -129,10 +129,10 @@ let songs = [
         "_id": "8",
         "title": "Burden",
         "artist": "Opeth",
-        "link": "https://youtu.be/orwgEEaJln0?si=_So15HCk-gKYbkRU",
         "img": "images/song-library-imgs/burden.png",
         "genre": "rock",
         "rating": "10",
+        'rating_count': 13,
         "techniques": [
             "string skipping",
             "bends",
@@ -145,22 +145,75 @@ let songs = [
 app.get('/api/songs', (req, res)=> {
   res.send(songs);
 });
-
+//!need to validate image
 app.post('/api/songs', upload.single('img'), (req, res)=> {
-    console.log('in post');
     const result = validateSong(req.body);
     if (result.error) {
         console.log('Error in validation');
         res.status(400).send(result.error.details[0].message);
         return;
     }
-    //todo
+    if (!req.file) {
+        res.status(400).send('an image is required');
+        return
+    }
+
+    const videoId = getVideoId(req.body.link);
+    const song = {
+        _id: songs.length+1,
+        title: req.body.title,
+        artist: req.body.artist,
+        img: 'images/' + req.file.filename,
+        genre: req.body.genre,
+        rating: '10',
+        rating_count: 0,
+        techniques: [],
+        videoId: videoId
+    }
+    songs.push(song)
+    res.status(200).send(song);
 });
+
+// Pulls the 11-character video ID out of any common YouTube URL format.
+// Returns null if the link isn't a YouTube video URL.
+const getVideoId = link => {
+    let url;
+    try {
+        url = new URL(link);
+    } catch {
+        return null;
+    }
+
+    const host = url.hostname.replace(/^(www\.|m\.|music\.)/, '');
+    let id = null;
+
+    if (host === 'youtu.be') {
+        // https://youtu.be/ID?si=...
+        id = url.pathname.slice(1);
+    } else if (host === 'youtube.com') {
+        if (url.pathname === '/watch') {
+            // https://www.youtube.com/watch?v=ID&t=30s
+            id = url.searchParams.get('v');
+        } else {
+            // https://www.youtube.com/shorts/ID, /embed/ID, /live/ID
+            const match = url.pathname.match(/^\/(shorts|embed|live)\/([^/]+)/);
+            if (match) id = match[2];
+        }
+    }
+
+    return /^[\w-]{11}$/.test(id) ? id : null;
+};
 
 const validateSong = song => {
     const schema = Joi.object({
         _id: Joi.allow(''),
-        //todo
+        title:Joi.string().min(1).required(),
+        artist:Joi.string().min(1).required(),
+        genre:Joi.string().min(1).required(), //!this needs to be changed 
+        //!need to figure out how to add techniques
+        link:Joi.string().required().custom((value, helpers) =>
+            getVideoId(value) ? value : helpers.error('any.invalid')
+        ).messages({ 'any.invalid': 'link must be a YouTube video URL' })
     });
 
     return schema.validate(song);
