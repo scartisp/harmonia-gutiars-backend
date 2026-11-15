@@ -1,5 +1,3 @@
-
-//todo add endpoint of genres and techniques to wesbite html page
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -159,7 +157,7 @@ let songs = [
 app.get('/api/songs', (req, res) => {
     res.send(songs);
 });
-//!need to validate image
+
 app.post('/api/songs', upload.single('img'), (req, res) => {
     const result = validateSong(req.body);
     if (result.error) {
@@ -172,18 +170,18 @@ app.post('/api/songs', upload.single('img'), (req, res) => {
         return
     }
 
-    const videoId = getVideoId(req.body.link);
+    const {title, artist, genre, techniques, link} = result.value;
     const song = {
         _id: songs.length + 1,
-        title: req.body.title,
-        artist: req.body.artist,
+        title: title,
+        artist: artist,
         img: 'images/' + req.file.filename,
-        genre: req.body.genre,
+        genre: genre,
         rating: '10',
         rating_count: 0,
-        techniques: req.body.techniques ?? [],
-        videoId: videoId
-    }
+        techniques: techniques,
+        videoId: getVideoId(link)
+    };
     songs.push(song)
     res.status(200).send(song);
 });
