@@ -62,7 +62,9 @@ let songs = [
         "techniques": [
             "Hammer on",
             "Bends",
-            "Tremelo picking"
+            "Tremelo picking",
+            "legatto",
+            "syncopation"
         ],
         'videoId': '8dj9KB89-OQ'
     },
