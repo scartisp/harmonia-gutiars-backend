@@ -1,3 +1,5 @@
+
+//todo add endpoint of genres and techniques to wesbite html page
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
