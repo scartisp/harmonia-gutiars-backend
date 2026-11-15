@@ -10,18 +10,30 @@ app.use(express.json());
 app.use(cors());
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./public/images/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
+    destination: (req, file, cb) => {
+        cb(null, "./public/images/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    },
 });
 
 const upload = multer({ storage: storage });
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
+    res.sendFile(__dirname + "/public/index.html");
+});
+
+//!temporary list, will expand upon later
+let genres = ['rock', 'blues', 'country', 'funk', 'jazz', 'metal']
+
+app.get('/api/genres', (req, res) => {
+    res.send(genres);
+});
+//!temporary list, will expand upon later
+let techniques = ['strumming', 'dead notes', 'open chords', 'hammer ons', 'pull offs', 'sweep picking']
+app.get('/api/techniques', (req, res) => {
+    res.send(techniques);
 });
 
 let songs = [
@@ -142,11 +154,11 @@ let songs = [
     }
 ];
 
-app.get('/api/songs', (req, res)=> {
-  res.send(songs);
+app.get('/api/songs', (req, res) => {
+    res.send(songs);
 });
 //!need to validate image
-app.post('/api/songs', upload.single('img'), (req, res)=> {
+app.post('/api/songs', upload.single('img'), (req, res) => {
     const result = validateSong(req.body);
     if (result.error) {
         console.log('Error in validation');
@@ -160,14 +172,14 @@ app.post('/api/songs', upload.single('img'), (req, res)=> {
 
     const videoId = getVideoId(req.body.link);
     const song = {
-        _id: songs.length+1,
+        _id: songs.length + 1,
         title: req.body.title,
         artist: req.body.artist,
         img: 'images/' + req.file.filename,
         genre: req.body.genre,
         rating: '10',
         rating_count: 0,
-        techniques: [],
+        techniques: req.body.techniques ?? [],
         videoId: videoId
     }
     songs.push(song)
@@ -207,11 +219,16 @@ const getVideoId = link => {
 const validateSong = song => {
     const schema = Joi.object({
         _id: Joi.allow(''),
-        title:Joi.string().min(1).required(),
-        artist:Joi.string().min(1).required(),
-        genre:Joi.string().min(1).required(), //!this needs to be changed 
-        //!need to figure out how to add techniques
-        link:Joi.string().required().custom((value, helpers) =>
+        title: Joi.string().min(1).required(),
+        artist: Joi.string().min(1).required(),
+        genre: Joi.string().valid(...genres).required(),
+        techniques: Joi.array()
+            .items(Joi.string().valid(...techniques))
+            .single()
+            .unique()
+            .max(5)
+            .default([]),
+        link: Joi.string().required().custom((value, helpers) =>
             getVideoId(value) ? value : helpers.error('any.invalid')
         ).messages({ 'any.invalid': 'link must be a YouTube video URL' })
     });
@@ -220,5 +237,5 @@ const validateSong = song => {
 };
 
 app.listen(3002, () => {
-  console.log("I'm listening");
+    console.log("I'm listening");
 });
