@@ -31,7 +31,10 @@ app.get('/api/genres', (req, res) => {
     res.send(genres);
 });
 //!temporary list, will expand upon later
-let techniques = ['strumming', 'dead notes', 'open chords', 'hammer ons', 'pull offs', 'sweep picking']
+let techniques = ['strumming', 'dead note', 'open chord', 'hammer on',
+    'pull off', 'sweep picking', 'bend', 'tremelo picking', 'legatto', 'syncopation',
+    'staccoto', 'hybrid picking', 'palm muting', 'power chord', 'sliding', 'hybrid picking', 'finger picking',
+    'thumping', 'string skipping', 'vibrato']
 app.get('/api/techniques', (req, res) => {
     res.send(techniques);
 });
@@ -46,8 +49,8 @@ let songs = [
         "rating": "10",
         'rating_count': 10,
         "techniques": [
-            "Sweep Picking",
-            "Syncopation"
+            "sweep picking",
+            "syncopation"
         ],
         'videoId': 'nKpIwX2P118'
     },
@@ -60,9 +63,9 @@ let songs = [
         "rating": "9",
         'rating_count': 23,
         "techniques": [
-            "Hammer on",
-            "Bends",
-            "Tremelo picking",
+            "hammer on",
+            "bend",
+            "tremelo picking",
             "legatto",
             "syncopation"
         ],
@@ -73,12 +76,12 @@ let songs = [
         "title": "The Thrill is Gone",
         "artist": "B.B. King",
         "img": "images/song-library-imgs/thrill.png",
-        "genre": "Blues",
+        "genre": "blues",
         "rating": "10",
         'rating_count': 31,
         "techniques": [
-            "Bends",
-            "Staccoto"
+            "bend",
+            "staccoto"
         ],
         'videoId': 'P_Qw4KgqpYI'
     },
@@ -92,7 +95,7 @@ let songs = [
         'rating_count': 13,
         "techniques": [
             "sliding",
-            "Hybrid picking"
+            "hybrid picking"
         ],
         'videoId': 'MJe3RLwftSM'
     },
@@ -106,7 +109,7 @@ let songs = [
         'rating_count': 1,
         "techniques": [
             "palm muting",
-            "power chords"
+            "power chord"
         ],
         'videoId': 'Uba0M2k9pQs'
     },
@@ -121,7 +124,7 @@ let songs = [
         "techniques": [
             "finger picking",
             "thumping",
-            "dead notes"
+            "dead note"
         ],
         'videoId': 'WVua9g7WPtg'
     },
@@ -134,7 +137,7 @@ let songs = [
         "rating": "10",
         'rating_count': 54,
         "techniques": [
-            "open chords",
+            "open chord",
             "strumming"
         ],
         'videoId': '1WaV2x8GXj0'
@@ -149,19 +152,20 @@ let songs = [
         'rating_count': 13,
         "techniques": [
             "string skipping",
-            "bends",
+            "bend",
             "vibrato"
         ],
         'videoId': 'orwgEEaJln0'
     }
 ];
+let songIdCount = songs.length;
 
 app.get('/api/songs', (req, res) => {
     res.send(songs);
 });
 
 app.post('/api/songs', upload.single('img'), (req, res) => {
-    const result = validateSong(req.body);
+    const result = postSongSchema.validate(req.body);
     if (result.error) {
         console.log('Error in validation');
         res.status(400).send(result.error.details[0].message);
@@ -171,10 +175,10 @@ app.post('/api/songs', upload.single('img'), (req, res) => {
         res.status(400).send('an image is required');
         return
     }
-
-    const {title, artist, genre, techniques, link} = result.value;
+    songIdCount += 1;
+    const { title, artist, genre, techniques, link } = result.value;
     const song = {
-        _id: songs.length + 1,
+        _id: String(songIdCount),
         title: title,
         artist: artist,
         img: 'images/' + req.file.filename,
@@ -187,6 +191,41 @@ app.post('/api/songs', upload.single('img'), (req, res) => {
     songs.push(song)
     res.status(200).send(song);
 });
+
+app.patch('/api/songs/:id', upload.single('img'), (req, res) => {
+    const song = songs.find(song => song._id === req.params.id);
+    if (!song) {
+        return res.status(404).send('Song not found');
+    }
+
+    const result = patchSongSchema.validate(req.body);
+    if (result.error) {
+        return res.status(400).send(result.error.details[0].message);
+    }
+
+    if (Object.keys(result.value).length === 0 && !req.file) {
+        return res.status(400).send('Nothing to update');
+    }
+
+    const { link, ...updates } = result.value;
+    Object.assign(song, updates);
+    if (link) song.videoId = getVideoId(link);
+    if (req.file) song.img = 'images/' + req.file.filename;
+
+    res.send(song);
+});
+
+app.delete('/api/songs/:id', (req, res) => {
+    const song = songs.find(s => s._id === req.params.id);
+
+    if (!song) {
+        return res.status(404).send('Song not found');
+    }
+
+    const index = songs.indexOf(song);
+    songs.splice(index,1);
+    res.status(200).send(song);
+})
 
 // Pulls the 11-character video ID out of any common YouTube URL format.
 // Returns null if the link isn't a YouTube video URL.
@@ -218,25 +257,26 @@ const getVideoId = link => {
     return /^[\w-]{11}$/.test(id) ? id : null;
 };
 
-const validateSong = song => {
-    const schema = Joi.object({
-        _id: Joi.allow(''),
-        title: Joi.string().min(1).required(),
-        artist: Joi.string().min(1).required(),
-        genre: Joi.string().valid(...genres).required(),
-        techniques: Joi.array()
-            .items(Joi.string().valid(...techniques))
-            .single()
-            .unique()
-            .max(5)
-            .default([]),
-        link: Joi.string().required().custom((value, helpers) =>
-            getVideoId(value) ? value : helpers.error('any.invalid')
-        ).messages({ 'any.invalid': 'link must be a YouTube video URL' })
-    });
-
-    return schema.validate(song);
+const songFields = {
+    title: Joi.string().min(1),
+    artist: Joi.string().min(1),
+    genre: Joi.string().valid(...genres),
+    techniques: Joi.array().items(Joi.string().valid(...techniques)).single().unique().max(5),
+    link: Joi.string().custom((value, helpers) =>
+        getVideoId(value) ? value : helpers.error('any.invalid')
+    ).messages({ 'any.invalid': 'link must be a YouTube video URL' })
 };
+
+const postSongSchema = Joi.object({
+    ...songFields,
+    title: songFields.title.required(),
+    artist: songFields.artist.required(),
+    genre: songFields.genre.required(),
+    link: songFields.link.required(),
+    techniques: songFields.techniques.default([]),
+});
+
+const patchSongSchema = Joi.object(songFields);
 
 app.listen(3002, () => {
     console.log("I'm listening");
